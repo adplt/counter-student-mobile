@@ -1,0 +1,17 @@
+{
+  "response": {
+    "result": {
+      "LoginResult": {
+        "userAdmin": 1,
+        "userDateCreated": "01 September 2017 00:00:00",
+        "userId": "admin",
+        "userLoginSession": "86071920171218142623",
+        "userMemberID": "86071931",
+        "userName": "Admin User",
+        "userPosition": "Abriptu",
+        "userPositionId": 18,
+        "userRole": "KA SPK UNIT II"
+      }
+    }
+  }
+}
