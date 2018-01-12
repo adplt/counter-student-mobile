@@ -31,6 +31,7 @@ export const get = (endpoint, options = {}, dynamicPath) => {
 };
 
 export const post = (endpoint, data = {}, options = {}, dynamicPath) => {
+
   const dynamic = !isEmpty(dynamicPath) ? dynamicPath : '';
   const config = {
     ...baseConfig,

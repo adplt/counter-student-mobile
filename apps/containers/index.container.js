@@ -7,7 +7,7 @@ const formConfig = {
   form: 'IndexForm',
   destroyOnUnmount: true,
   onSubmit: (values, dispatch) => {
-    dispatch(validateStudent());
+    dispatch(validateStudent(values));
   },
   validate: (values) => {},
   initialValues: {

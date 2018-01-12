@@ -1,7 +1,7 @@
-import {result} from 'lodash';
 import {mockResponses} from '../config/api.config';
 import env from '../config/env.config';
-// import uuidV4 from 'uuid/v4';
+import uuidV4 from 'uuid/v4';
+import result from 'lodash/result';
 import {filterObjectProperties} from './transformer.util';
 import {highlightNetworkBar} from '../state/actions/common.actions';
 // import tracker from '../utils/googleAnalytics.util';
@@ -14,34 +14,24 @@ export const addDefaultPayloadInterceptor = (store) => (config) => {
   const reduxState = store.getState();
   const completeExtraPayload = {
     ...(result(reduxState, 'additionalApiPayload', {})),
-    MODIFIED_BY: result(reduxState, 'user.userId'),
+    lang: result(reduxState, 'currentLanguage.id', 'id'),
+    TXID: uuidV4(),
+    profileId: result(reduxState, 'user._id'),
   };
-  // lang: result(reduxState, 'currentLanguage.id', 'id'),
-  // TXID: uuidV4(),
-  // profileId: result(reduxState, 'user._id'),
   config.data = Object.assign({}, filterObjectProperties(completeExtraPayload, result(config, 'additional', [])), config.data);
   return config;
 };
 
 // Interceptor that checks the status of the response
 export const getStatusValidatorInterceptor = () => (response) => {
-  const {status, data = {}} = response;
-  const responseStatus = result(data, 'ResponseStatus', '');
-  if (!responseStatus && responseStatus <= 0) {
-    if (status >= 200 && status < 300) return response;
-    if (status === 401);
-    // const userId = result(store.getState(), 'user.profile.customer.id', 0);
-    // const trackerLabel = getInterceptorTrackerLabel(response, userId);
-    // const endpoint = result(response, 'config.endpoint', 'NOT FOUND');
-    // tracker.trackEvent('API_FAILED: STATUS_CODE_' + status, `ENDPOINT: ${endpoint} ${endpoints[endpoint]}`, {label: trackerLabel});
-    throw response;
-  } else {
-    if (responseStatus === 0) {
-      return response;
-    }
-
-    throw response;
-  }
+  const {status} = response;
+  if (status >= 200 && status < 300) return response;
+  if (status === 401);
+  // const userId = result(store.getState(), 'user.profile.customer.id', 0);
+  // const trackerLabel = getInterceptorTrackerLabel(response, userId);
+  // const endpoint = result(response, 'config.endpoint', 'NOT FOUND');
+  // tracker.trackEvent('API_FAILED: STATUS_CODE_' + status, `ENDPOINT: ${endpoint} ${endpoints[endpoint]}`, {label: trackerLabel});
+  throw response;
 };
 
 // Interceptor that sets mock response
@@ -56,7 +46,7 @@ export const mockInterceptor = (config) => {
 const mockAdapter = (config) => new Promise((resolve) => {
   const mockData = result(mockResponses, config.endpoint, {});
   const response = {
-    data: result(mockData, 'response.result', {}),
+    data: mockData,
     status: 200,
     statusText: 'OK - Mocked request',
     headers: {mock: true},
@@ -86,14 +76,17 @@ export const getNoNetWorkInterceptor =  (store) => (config) => {
 //   return config;
 // };
 
-// export const removeFalsyValues = (config = {}) => {
-//   if (config.method === 'get') return config;
-//   const transformedPayload = {};
-//   const payload = result(config, 'data', {});
-//   Object.keys(payload).map((key) => {
-//     // Do not remove key if its false or it has some value
-//     if ((payload[key] && payload[key] !== 'undefined') || payload[key] === false) transformedPayload[key] = payload[key];
-//   });
-//   config.data = transformedPayload;
-//   return config;
-// };
+export const removeFalsyValues = (config = {}) => {
+  if (config.method === 'get') {
+    return config;
+  }
+  const transformedPayload = {};
+  const payload = result(config, 'data', {});
+  Object.keys(payload).map((key) => {
+    if ((payload[key] && payload[key] !== 'undefined') || payload[key] === false) { // Do not remove key if its false or it has some value
+      transformedPayload[key] = payload[key];
+    }
+  });
+  config.data = transformedPayload;
+  return config;
+};

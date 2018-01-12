@@ -7,8 +7,10 @@ import {wrapObjectInFunction} from './apps/utils/transformer.util';
 import AppIndex from './apps/App.container';
 import {initStore} from './apps/state/store';
 import {Provider} from 'react-redux';
+import {initializeHTTPInterceptors} from './apps/utils/http.util';
 
 const store = initStore();
+initializeHTTPInterceptors(store);
 
 const MyApp = () => (
   <Provider store={store}>

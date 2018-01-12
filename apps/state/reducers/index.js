@@ -3,6 +3,7 @@ import {reducer as formReducer} from 'redux-form';
 import {CLEAN_APP_STATE} from '../actions/common.actions';
 import Navigator from '../../routes/index.routes';
 import spinner from './spinner.reducer';
+import saveCounter from './counter.reducers';
 
 const nav = (state, action) => (
   Navigator.router.getStateForAction(action, state)
@@ -12,6 +13,7 @@ const appReducers = combineReducers({
   nav,
   form: formReducer,
   spinner,
+  saveCounter,
 });
 
 
