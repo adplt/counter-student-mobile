@@ -1,2 +1,2 @@
-# Counter Student System Mobile
-Just a simple project to implement bluemix
+# Counter Student System
+Just a simple mobile project to implement bluemix
